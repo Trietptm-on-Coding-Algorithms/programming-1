@@ -25,7 +25,7 @@ class PalindromeReverseIterator:
 
         # skip evens
         s = str(self.count)
-        if s[0] in '2468':
+        if n!=2 and s[0] in '2468':
             s = {'2':'1','4':'3','6':'5','8':'7'}[s[0]] + s[1:]
             self.count = int(s)
 
@@ -43,6 +43,10 @@ class PalindromeReverseIterator:
 
     def next(self):
         answer = ''
+        
+        # base case
+        #print "WTF? count: %d" % self.count
+        if self.count <= 0: raise StopIteration()
 
         # form answer
         s = str(self.count)
@@ -54,7 +58,6 @@ class PalindromeReverseIterator:
         # where next?
         self.count -= 1
 
-        if self.count < 0: raise StopIteration()
         if self.count < self.limitLo:
             if self.pivot:
                 self.limitHi = self.limitLo - 1
@@ -160,7 +163,7 @@ def isPrime(n):
 
     # base test
     # at most N/4 bases will falsely report a likely prime
-    for temp in range(32):
+    for temp in range(4):
         #print "iteration %d" % temp
         base = random.randrange(1, n-1)
 
@@ -193,28 +196,24 @@ def isPrime(n):
 
 # main
 #t = int(raw_input())
-t = 1000
+n = int(raw_input())
+#print "%d trials" % n
 
-for i in range(t):
-    #n = int(raw_input())
-    n = random.randint(0,10**13)
-    if (n%2)==0:
-        n -= 1
+for z in range(n):
 
-    print "working on %d" % n
+    n = int(raw_input())
+    if n!=2 and (n%2)==0: n-=1
+    #print "making iterator with %d" % n
+    it = iter(PalindromeReverseIterator(n))
 
-    x = iter(PalindromeReverseIterator(n))
     while 1:
-        k = x.next()
-        #print "progress? %d" % k 
+        k = it.next()
 
+        #print "checking primality of %d" % k
         if isPrime(k):
-            #print "%d is prime" % n
             print k
             break
+        #print "done checking primality"
 
-#foo = PalindromeReverseIterator(8675309)
-#for k in foo:
-#    print k
 
 
