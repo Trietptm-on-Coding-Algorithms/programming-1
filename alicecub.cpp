@@ -1,3 +1,7 @@
+/*
+http://www.spoj.com/problems/ALICECUB/
+ALICECUB - Alice’s Cube
+*/
 #include <stdio.h>
 
 #include <vector>

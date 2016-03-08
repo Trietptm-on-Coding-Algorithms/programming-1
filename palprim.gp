@@ -1,3 +1,10 @@
+/* helper script for palindrome prime puzzle
+    language is pari/gp (see pari.math.u-bordeaux.fr)
+
+    load with `\r palprim.gp`
+*/
+
+
 /* 41889, 42524, 37865 */
 isPalindrome1(n) = {
     return( n == eval(concat(Vecrev(Str(n)))) );
@@ -43,4 +50,53 @@ search(thread) = {
     t1=getabstime();
     print(t1-t0);
 }
+
+survey() = {
+    divs = 100000; /* number of ways to divide up the 10^13 space */
+    cover = 10000; /* number of primes to test at each sample point */
+
+    x_plot_vals = [];
+    y_plot_vals = [];
+
+    for(k=1, divs,
+
+        found = 0;
+
+        left = 2 + (k*(10^13))/divs;
+
+        /* don't waste time on numbers with even digits 
+            -> divisible by 11 */
+        if(length(Str(left)) % 2,
+
+            left = nextprime(left);
+            for(k=1, cover,
+                if(isPalindrome3(left),
+                    found = 1;
+                    break;
+                );
+    
+                left = nextprime(left+1);
+            );
+        );
+
+        if(found,
+            print(left, "...X");
+            x_plot_vals = concat(x_plot_vals, k);
+            y_plot_vals = concat(y_plot_vals, left)
+        ,
+            print(left, "...");
+        );
+    );
+
+    print("graphing...");
+    /*
+    print("x values: ", x_plot_vals);
+    print("y values: ", y_plot_vals);
+    */
+    plotpointsize(-1, 100);
+    plothraw(x_plot_vals, y_plot_vals);
+    plotpointsize(-1, 100);
+}
+
+
 
