@@ -2,6 +2,17 @@
     language is pari/gp (see pari.math.u-bordeaux.fr)
 
     load with `\r palprim.gp`
+
+    is it smarter to:
+    iterate over primes and test palindrome?
+    or iterate over palindromes and test primality?
+
+    for a 13-digit number, there are 10^7 palindromes
+    but there are pi(13)-pi(12) = 346,065,536,839-37,607,912,018=308,457,624,821 primes
+
+    and that disregards the ease at which to generate the next palindrome vs. the
+    ease at which to compute the next prime
+
 */
 
 
@@ -22,81 +33,70 @@ isPalindrome3(n) = {
     return( Str(n) == concat(Vecrev(Str(n))) );
 }
 
-search(thread) = {
+
+count = 1
+pivot = 1
+limit_lo = 1
+limit_hi = 9
+num_pp = 0
+
+palindrome_next() = {
+    count += 1;
+   
+    /* print("comparing count=",count," with limit_hi=",limit_hi); */
+
+    if(count > limit_hi,
+        if(pivot,
+            pivot = 0;
+            count = limit_lo;
+        ,
+            pivot = 1;
+            limit_lo = limit_hi + 1;
+            limit_hi = limit_lo * 10 - 1;
+            count = limit_lo;
+        );
+    );
+
+    s = Str(count);
+    if(pivot, 
+        left = Str(s);
+        right = List(Vec(s));
+        listpop(right);
+        if(length(right),
+            right = concat( Vecrev(right) );
+        ,
+            right = "";
+        );
+        return(eval(concat(left, right)));
+    ,
+        return(eval(concat(s, concat(Vecrev(s)))));
+    );
+}
+
+search() = {
     t0 = getabstime();
+    iter = 0;
 
-    if(thread == 0, 
-        forprime(p=2,                        11, if(isPalindrome3(p), print(p)));
-        forprime(p=101,                     999, if(isPalindrome3(p), print(p)));
-        forprime(p=10001,                 99999, if(isPalindrome3(p), print(p)));
-        forprime(p=1000001,             9999999, if(isPalindrome3(p), print(p)));
-        forprime(p=100000001,         999999999, if(isPalindrome3(p), print(p)));
-        forprime(p=10000000001,     99999999999, if(isPalindrome3(p), print(p)));
-        forprime(p=1000000000001, 2500000000000, if(isPalindrome3(p), print(p)));
-    );
+    while(1,
+        pal = palindrome_next();
 
-    if(thread == 1,
-        forprime(p=2500000000001, 5000000000000, if(isPalindrome3(p), print(p)))
-    );
+        if(pal >= 10000000000001,
+            break;
+        );
 
-    if(thread == 2,
-        forprime(p=5000000000001, 7500000000000, if(isPalindrome3(p), print(p)))
-    );
+        /* even digits -> divisible by 11 */
+        if(logint(pal, 10) % 2 != 0,
+            next;
+        );
 
-    if(thread == 3,
-        forprime(p=7500000000001, 9999999999999, if(isPalindrome3(p), print(p)))
+        if(isprime(pal),
+            num_pp += 1;
+            print(pal);
+        );
     );
 
     t1=getabstime();
-    print(t1-t0);
+    print("time=", t1-t0,"ms");
+    print("total P.P. found=", num_pp);
 }
-
-survey() = {
-    divs = 100000; /* number of ways to divide up the 10^13 space */
-    cover = 10000; /* number of primes to test at each sample point */
-
-    x_plot_vals = [];
-    y_plot_vals = [];
-
-    for(k=1, divs,
-
-        found = 0;
-
-        left = 2 + (k*(10^13))/divs;
-
-        /* don't waste time on numbers with even digits 
-            -> divisible by 11 */
-        if(length(Str(left)) % 2,
-
-            left = nextprime(left);
-            for(k=1, cover,
-                if(isPalindrome3(left),
-                    found = 1;
-                    break;
-                );
-    
-                left = nextprime(left+1);
-            );
-        );
-
-        if(found,
-            print(left, "...X");
-            x_plot_vals = concat(x_plot_vals, k);
-            y_plot_vals = concat(y_plot_vals, left)
-        ,
-            print(left, "...");
-        );
-    );
-
-    print("graphing...");
-    /*
-    print("x values: ", x_plot_vals);
-    print("y values: ", y_plot_vals);
-    */
-    plotpointsize(-1, 100);
-    plothraw(x_plot_vals, y_plot_vals);
-    plotpointsize(-1, 100);
-}
-
-
 

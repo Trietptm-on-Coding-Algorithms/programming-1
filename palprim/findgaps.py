@@ -1,44 +1,45 @@
 #!/usr/bin/env python
 
-import re
-
-fp = open('survey.txt', 'r')
-lines = fp.readlines()
-fp.close()
-
-cur_int_start = 0
-cur_int_len = 0
-state = 'looking'
+last_prime = 2
 
 runs = {}
 
-for line in lines:
-    line = line.strip()
-    #print "[state:%s] %s" % (state, line)
-    m = re.match(r'^(\d+).*', line)
-    here = int(m.group(1))
+# generate pplist.txt with search() in palprim.gp
+with open('pplist.txt') as f:
+    for line in f:
+        this_prime = int(line)
 
-    if state=='looking':
-        if line[-1] != 'X':
-            cur_int_start = here
-            state = 'in'
-        continue
+        run_len = this_prime - last_prime
 
-    if state == 'in':
-        if line[-1] == 'X':
+        if run_len > 1000:
             info = {
-                'start':cur_int_start,
-                'length':cur_int_len
+                'start':last_prime,
+                'length':run_len,
             }
-            runs[cur_int_start] = info
-            #print "at %d there's a run of %d" % (runs['start'], runs['length'])
-            state = 'looking'
-        else:
-            cur_int_len = here - cur_int_start
+            runs[last_prime] = info
+
+        last_prime = this_prime
 
 best = sorted(runs.keys(), key=lambda x: runs[x], reverse=True)
-for b in best[0:2048]:
+best = best[0:128]
+for b in best:
     print "at % 13d there's a run of %013d" % (runs[b]['start'], runs[b]['length'])
+
+# generate code for quick skipping of gaps
+best = sorted(best)
+for b in best:
+    left_prime = runs[b]['start']
+    right_prime = left_prime + runs[b]['length']
+
+    # convert the palindrome boundaries to "count" boundaries
+    left_prime_ = str(left_prime)
+    left_prime_ = int(left_prime_[0:len(left_prime_)/2+1])
+
+    right_prime_ = str(right_prime)
+    right_prime_ = int(right_prime_[0:len(right_prime_)/2+1])
+
+    print "    if x>%d and x<%d: return %d # for [%d,%d] len=%d" % \
+        (left_prime_, right_prime_, left_prime_, left_prime, right_prime, right_prime-left_prime)
 
 
 
