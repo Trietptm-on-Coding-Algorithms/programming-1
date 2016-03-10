@@ -64,8 +64,8 @@ class PalindromeIterator:
                 self.pivot = False
             else:
                 # set new limits
-                self.limitLo = self.LimitLo * 10
-                self.count = self.LimitLo * 10 - 1
+                self.limitLo = self.limitLo * 10
+                self.count = self.limitLo * 10 - 1
                 self.pivot = True
 
         #self.status()

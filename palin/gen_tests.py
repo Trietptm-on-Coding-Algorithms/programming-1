@@ -2,12 +2,16 @@
 
 import random
 
-print '1003'
+print 3 + 10000 + 100
+
 print '808'
 print '2133'
 print '234623'
 
-for trial in range(1000):
+for i in range(10000):
+    print i
+
+for trial in range(100):
     size = random.randint(1,100000)
 
     buf = ''
