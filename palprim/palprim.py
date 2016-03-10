@@ -214,24 +214,6 @@ class PalindromeReverseIterator:
         else:
             return int(s + s[::-1])
 
-def ExpMod(base, exp, modulus):
-    answer = 1
-    runner = base
-
-    if not exp:
-        return 1
-
-    while 1:
-        if exp & 1:
-            answer = (answer*runner) % modulus
-
-        exp = exp >> 1
-        if not exp: break
-
-        runner = (runner*runner) % modulus
-
-    return answer
-
 #
 # from:
 # https://inventwithpython.com/rabinMiller.py
@@ -288,7 +270,7 @@ def isPrime(num):
 # main
 #
 if __name__ == '__main__':
-    if 1:
+    if 0:
         n = int(raw_input())
     
         for z in range(n):

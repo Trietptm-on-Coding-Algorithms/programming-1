@@ -2,6 +2,7 @@
 #include <stdlib.h>
 
 typedef unsigned long int u64;
+typedef __uint128_t bn; // bignum
 
 /*****************************************************************************/
 /* PRIME PALINDROME STUFF */
@@ -205,7 +206,7 @@ void palin_init(u64 n)
     if(palin_test(g_count))
         g_count += 1;
 
-    palin_status();
+    //palin_status();
 }
 
 u64 palin_next()
@@ -272,92 +273,6 @@ u64 palin_next()
     return strtoul(buf, NULL, 10);
 }
 
-/*
-
-#
-# from:
-# https://inventwithpython.com/rabinMiller.py
-#
-def rabinMiller(num):
-    # Returns True if num is a prime number.
-
-    s = num - 1
-    t = 0
-    while s % 2 == 0:
-        # keep halving s while it is even (and use t
-        # to count how many times we halve s)
-        s = s // 2
-        t += 1
-
-    for trials in range(5): # try to falsify num's primality 5 times
-        a = random.randrange(2, num - 1)
-        v = pow(a, s, num)
-        if v != 1: # this test does not apply if v is 1.
-            i = 0
-            while v != (num - 1):
-                if i == t - 1:
-                    return False
-                else:
-                    i = i + 1
-                    v = (v ** 2) % num
-    return True
-
-def isPrime(num):
-    # Return True if num is a prime number. This function does a quicker
-    # prime number check before calling rabinMiller().
-
-    if (num < 2):
-        return False # 0, 1, and negative numbers are not prime
-
-    # About 1/3 of the time we can quickly determine if num is not prime
-    # by dividing by the first few dozen prime numbers. This is quicker
-    # than rabinMiller(), but unlike rabinMiller() is not guaranteed to
-    # prove that a number is prime.
-    lowPrimes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199, 211, 223, 227, 229, 233, 239, 241, 251, 257, 263, 269, 271, 277, 281, 283, 293, 307, 311, 313, 317, 331, 337, 347, 349, 353, 359, 367, 373, 379, 383, 389, 397, 401, 409, 419, 421, 431, 433, 439, 443, 449, 457, 461, 463, 467, 479, 487, 491, 499, 503, 509, 521, 523, 541, 547, 557, 563, 569, 571, 577, 587, 593, 599, 601, 607, 613, 617, 619, 631, 641, 643, 647, 653, 659, 661, 673, 677, 683, 691, 701, 709, 719, 727, 733, 739, 743, 751, 757, 761, 769, 773, 787, 797, 809, 811, 821, 823, 827, 829, 839, 853, 857, 859, 863, 877, 881, 883, 887, 907, 911, 919, 929, 937, 941, 947, 953, 967, 971, 977, 983, 991, 997]
-
-    if num in lowPrimes:
-        return True
-
-    # See if any of the low prime numbers can divide num
-    for prime in lowPrimes:
-        if (num % prime == 0):
-            return False
-
-    # If all else fails, call rabinMiller() to determine if num is a prime.
-    return rabinMiller(num)
-
-
-#
-# main
-#
-if __name__ == '__main__':
-    if 1:
-        n = int(raw_input())
-    
-        for z in range(n):
-    
-            n = int(raw_input())
-            if n!=2 and (n%2)==0: n-=1
-            #print "making iterator with %d" % n
-            it = iter(PalindromeReverseIterator(n))
-        
-            while 1:
-                k = it.next()
-        
-                #print "checking primality of %d" % k
-                if isPrime(k):
-                    print k
-                    break
-                #print "done checking primality"
-    else:
-        it = iter(PalindromeReverseIterator(9999999999999))
-        #it = iter(PalindromeReverseIterator(9999999999))
-        #it = iter(PalindromeReverseIterator(1000330001))
-        for p in it:
-            print p
-    
-*/
-
 /*****************************************************************************/
 /* PRIMALITY TESTING */
 /*****************************************************************************/
@@ -366,36 +281,52 @@ if __name__ == '__main__':
 // claim: Deterministic up to 341,550,071,728,321[edit]
 
 // calcul a^n%mod
-u64 power(u64 a, u64 n, u64 mod)
+u64 expmod(u64 a, u64 n, u64 mod)
 {
-    u64 power = a;
+    //printf("expmod(a=%lu, n=%lu, mod=%lu)\n", a, n, mod);
+    u64 runner = a;
     u64 result = 1;
  
     while (n)
     {
-        if (n & 1)
-            result = (result * power) % mod;
-        power = (power * power) % mod;
+        if (n & 1) {
+            result = ((bn)result * runner) % mod;
+            //printf("%lx:%lx\n", (u64)(tmp>>64), (u64)(tmp & 0xFFFFFFFFFFFFFFFF));
+            //printf("new result=%lu\n", result);
+        }
+        runner = ((bn)runner * runner) % mod;
+        //printf("new runner=%lu\n", runner);
         n >>= 1;
     }
+    //printf("computed result=%lu\n", result);
     return result;
 }
  
 // n−1 = 2^s * d with d odd by factoring powers of 2 from n−1
 bool witness(u64 n, u64 s, u64 d, u64 a)
 {
-    u64 x = power(a, d, n);
+    //printf("witness(n=%lu, s=%lu, d=%lu, a=%lu)\n", n, s, d, a);
+    // if prime, a^d=1(mod n)
+    //       and a^(2^r*d)=-1(mod n) (where r < s)
+    //
+    // to witness compositeness, we need to show that a^d and a^(2^r*d) does not
+    // equal 1 or -1
+
+    u64 x = expmod(a, d, n); // a^d
     u64 y;
  
-    while (s) {
-        y = (x * x) % n;
+    for(; s; s--) {
+        // compute a^(2^1*d), a^(2^2*d), ...
+        y = ((bn)x * x) % n;
+
         if (y == 1 && x != 1 && x != n-1)
             return false;
+
         x = y;
-        --s;
     }
     if (y != 1)
         return false;
+
     return true;
 }
  
@@ -411,17 +342,20 @@ bool witness(u64 n, u64 s, u64 d, u64 a)
  
 bool is_prime_mr(u64 n)
 {
-    if (((!(n & 1)) && n != 2 ) || (n < 2) || (n % 3 == 0 && n != 3))
+    if ( (!(n & 1) && n != 2 ) || (n < 2) || (n % 3 == 0 && n != 3))
         return false;
     if (n <= 3)
         return true;
- 
-    u64 d = n / 2;
+
+    u64 d = (n-1) / 2;
     u64 s = 1;
     while (!(d & 1)) {
-        d /= 2;
+        d >>= 1;
         ++s;
     }
+
+    //printf("d=%lu\n", d);
+    //printf("s=%lu\n", s);
  
     if (n < 1373653)
         return witness(n,s,d,2) && witness(n,s,d,3);
@@ -430,13 +364,11 @@ bool is_prime_mr(u64 n)
     if (n < 4759123141)
         return witness(n,s,d,2) && witness(n,s,d,7) && witness(n,s,d,61);
     if (n < 1122004669633)
-        printf("YUP\n");
         return witness(n,s,d,2) && witness(n,s,d,13) && witness(n,s,d,23) && witness(n,s,d,1662803);
     if (n < 2152302898747)
         return witness(n,s,d,2) && witness(n,s,d,3) && witness(n,s,d,5) && witness(n,s,d,7) && witness(n,s,d,11);
-    if (n < 3474749660383) {
+    if (n < 3474749660383)
         return witness(n,s,d,2) && witness(n,s,d,3) && witness(n,s,d,5) && witness(n,s,d,7) && witness(n,s,d,11) && witness(n,s,d,13);
-    }
     return witness(n,s,d,2) && witness(n,s,d,3) && witness(n,s,d,5) && witness(n,s,d,7) && witness(n,s,d,11) && witness(n,s,d,13) && witness(n,s,d,17);
 }
 
@@ -446,29 +378,35 @@ bool is_prime_mr(u64 n)
 
 int main()
 {
-    char buf[32];
+    if(1) {
+        int num_cases;
+        scanf("%d", &num_cases);
+        for(int i=0; i<num_cases; ++i) {
+            u64 start;
+            scanf("%lu", &start);
+            palin_init(start);
 
-    u64 derp = 9414706074999; // 9414706074149
+            while(1) {
+                u64 p = palin_next();
+                if(is_prime_mr(p)) {
+                    printf("%lu\n", p);
+                    break;
+                }
+            }
+        }
+    }
+    else {
+        palin_init(9999999999999);
+        //palin_init(1467083807641);
+
+        while(1) {
+            u64 p = palin_next();
     
-    printf("sizeof(long int) is: %lu\n", sizeof(unsigned long int));
-
-    sprintf(buf, "%lu", derp);
-
-    printf("sprintf result is: %s\n", buf);
-
-    printf("mapping %lu to %lu\n", derp, palin_skip(derp));
-
-    printf("WTF HELL: %d\n", is_prime_mr(1000000000039));
-    return 0;
-
-    palin_init(9999999999999);
-    while(1) {
-        u64 p = palin_next();
-
-        if(p == -1) break;
-
-        if(is_prime_mr(p))
-            printf("%lu\n", p);
+            if(p == -1) break;
+    
+            if(is_prime_mr(p))
+                printf("%lu\n", p);
+        }
     }
 
     return 0;

@@ -100,3 +100,14 @@ search() = {
     print("total P.P. found=", num_pp);
 }
 
+gen_powmod_tests() = {
+    for(x=1,64,
+        b = random(2^64);
+        e = random(2^64);
+        m = random(10^13);
+
+        ans = lift(Mod(b,m)^e);
+
+        print("if(expmod(",b,"ull, ",e,"ull, ",m,"ull) == ",ans,") { printf(\"pass\"); } else { printf(\"fail\"); }");
+    );
+}
