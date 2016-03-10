@@ -4,6 +4,7 @@
 # PALIN - The Next Palindrome
 
 import sys
+import datetime
 
 class PalindromeIterator:
     def __init__(self, n):
@@ -72,6 +73,8 @@ class PalindromeIterator:
 
         # done
         return int(answer)
+    
+t0 = datetime.datetime.now()
 
 n = int(raw_input())
 
@@ -88,5 +91,8 @@ for z in range(n):
 
     print it.current()
 
+t1 = datetime.datetime.now()
+
+print "total time: ", t1-t0
 sys.exit(0)
 
