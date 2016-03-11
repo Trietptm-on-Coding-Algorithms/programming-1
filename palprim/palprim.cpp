@@ -2,10 +2,9 @@
 #include <stdlib.h>
 
 typedef unsigned long int u64;
-typedef __uint128_t bn; // bignum
 
 /*****************************************************************************/
-/* PRIME PALINDROME STUFF */
+/* PALINDROME STUFF */
 /*****************************************************************************/
 u64 g_count;
 u64 g_limit_lo;
@@ -277,11 +276,12 @@ u64 palin_next()
 /* PRIMALITY TESTING */
 /*****************************************************************************/
 
-// from https://rosettacode.org/wiki/Miller%E2%80%93Rabin_primality_test#Deterministic_up_to_341.2C550.2C071.2C728.2C321
-// claim: Deterministic up to 341,550,071,728,321[edit]
-
 u64 sqrmod(u64 base, u64 mod)
 {
+    if(!(base & 0xFFFFFFFF00000000)) {
+        return (base * base) % mod;
+    }
+
     u64 a = base >> 32;
     u64 b = base & 0xFFFFFFFF;
 
@@ -289,32 +289,75 @@ u64 sqrmod(u64 base, u64 mod)
     u64 t0 = b*b % mod;
     // 2*ab*(2^32)
     u64 t1 = a*b % mod;
-    t1 = (t1 << 32) % mod;
-    t1 = (t1 << 1) % mod;
+    t1 = (t1 << 17) % mod;
+    t1 = (t1 << 16) % mod;
     // a^2 * 2^32 * 2^32
     u64 t2 = a*a % mod;
-    t2 = (t2 << 32) % mod;
-    t2 = (t2 << 32) % mod;
+    t2 = (t2 << 16) % mod;
+    t2 = (t2 << 16) % mod;
+    t2 = (t2 << 16) % mod;
+    t2 = (t2 << 16) % mod;
 
     // the final
     return (t0+t1+t2) % mod;
 }
 
-// calcul a^n%mod
-u64 expmod128(u64 a, u64 n, u64 mod)
+// modulus in this challenge can be at most 10^13 (44 bits) so each remainder
+// calculated can be that big - we're able to shift at most 20 at a time then
+// in 64-bit register without overflow
+u64 mulmod(u64 factor0, u64 factor1, u64 mod)
 {
-    //printf("expmod(a=%lu, n=%lu, mod=%lu)\n", a, n, mod);
+    if(!(factor0 & 0xFFFFFFFF00000000) && !(factor1 & 0xFFFFFFFF00000000)) {
+        return (factor0 * factor1) % mod;
+    }
+
+    u64 a = factor0 >> 32;
+    u64 b = factor0 & 0xFFFFFFFF;
+    u64 c = factor1 >> 32;
+    u64 d = factor1 & 0xFFFFFFFF;
+
+    //   a b
+    // x c d
+    // -----
+    //     bd
+    //   da
+    //   cb
+    // ca
+
+    // 
+    u64 t0 = d*b % mod;
+    // 
+    u64 t1 = d*a % mod;
+    u64 t2 = c*b % mod;
+    u64 t3 = (t1 + t2) % mod;
+    t3 = (t3 << 16) % mod;
+    t3 = (t3 << 16) % mod;
+    // 
+    u64 t4 = c*a % mod;
+    t4 = (t4 << 16) % mod;
+    t4 = (t4 << 16) % mod;
+    t4 = (t4 << 16) % mod;
+    t4 = (t4 << 16) % mod;
+
+    // the final
+    return (t0+t3+t4) % mod;
+}
+
+// calculate a^n%mod
+u64 powmod(u64 a, u64 n, u64 mod)
+{
+    //printf("powmod(a=%lu, n=%lu, mod=%lu)\n", a, n, mod);
     u64 runner = a;
     u64 result = 1;
  
     while (n)
     {
         if (n & 1) {
-            result = ((bn)result * runner) % mod;
-            //printf("%lx:%lx\n", (u64)(tmp>>64), (u64)(tmp & 0xFFFFFFFFFFFFFFFF));
+            result = mulmod(result, runner, mod);
             //printf("new result=%lu\n", result);
         }
-        runner = ((bn)runner * runner) % mod;
+        //printf("computing %lu ^2 mod  %lu \n", runner, n);
+        runner = sqrmod(runner, mod);
         //printf("new runner=%lu\n", runner);
         n >>= 1;
     }
@@ -326,47 +369,67 @@ u64 expmod128(u64 a, u64 n, u64 mod)
 bool witness(u64 n, u64 s, u64 d, u64 a)
 {
     //printf("witness(n=%lu, s=%lu, d=%lu, a=%lu)\n", n, s, d, a);
-    // if prime, a^d=1(mod n)
-    //       and a^(2^r*d)=-1(mod n) (where r < s)
-    //
-    // to witness compositeness, we need to show that a^d and a^(2^r*d) does not
-    // equal 1 or -1
 
-    u64 x = expmod128(a, d, n); // a^d
+    // if prime -> search_satisfied
+    //
+    // where search_satisfied is defined as finding a,d,r:
+    //   a^d=1(mod n) or 
+    //   a^(2^r*d)=-1(mod n) for r < s, r possibly 0
+    //
+    // converse it not true:
+    //   if search_satisfied, primality is not guaranteed (liar case)
+    //
+    // contrapositive: if not search_satisfied -> not prime (witness compositeness)
+
+    u64 x = powmod(a, d, n); // a^d
+    if(x == 1 || x==(n-1)) {
+        //printf("found a^d=1 (mod n) so we cannot testify to compositeness\n");
+        /* search satisfied, we do NOT witness compositeness */
+        return false;
+    }
+       
+    // try all a^(2*d), a^(2^2*d), a^(2^3*d), ..., a^(2^s*d)
     u64 y;
  
-    for(; s; s--) {
+    for(int i=1; i<=s; ++i) {
         // compute a^(2^1*d), a^(2^2*d), ...
-        y = ((bn)x * x) % n;
+        x = sqrmod(x, n);
+        //printf("a^(2^%d*d)=%lu (mod n)\n", i, x);
 
-        if (y == 1 && x != 1 && x != n-1)
+        if(x == (n-1)) { // note n-1 = -1 (mod n)
+            //printf("found a^(2^%d*d)=-1 (mod n) so we cannot testify to compositeness\n", i);
             return false;
-
-        x = y;
+        }
     }
-    if (y != 1)
-        return false;
 
+    //printf("search satisfied is false, so this is not prime (witness compositeness)\n");
     return true;
 }
  
 /*
- * if n < 1,373,653, it is enough to test a = 2 and 3;
- * if n < 9,080,191, it is enough to test a = 31 and 73;
- * if n < 4,759,123,141, it is enough to test a = 2, 7, and 61;
- * if n < 1,122,004,669,633, it is enough to test a = 2, 13, 23, and 1662803;
- * if n < 2,152,302,898,747, it is enough to test a = 2, 3, 5, 7, and 11;
- * if n < 3,474,749,660,383, it is enough to test a = 2, 3, 5, 7, 11, and 13;
- * if n < 341,550,071,728,321, it is enough to test a = 2, 3, 5, 7, 11, 13, and 17.
- */
- 
+from https://en.wikipedia.org/wiki/Miller%E2%80%93Rabin_primality_test:
+
+For example, Pomerance, Selfridge and Wagstaff[8] and Jaeschke[9] have verified that
+if n < 2,047, it is enough to test a = 2;
+if n < 1,373,653, it is enough to test a = 2 and 3;
+if n < 9,080,191, it is enough to test a = 31 and 73;
+if n < 25,326,001, it is enough to test a = 2, 3, and 5;
+if n < 3,215,031,751, it is enough to test a = 2, 3, 5, and 7;
+if n < 4,759,123,141, it is enough to test a = 2, 7, and 61;
+if n < 1,122,004,669,633, it is enough to test a = 2, 13, 23, and 1662803;
+if n < 2,152,302,898,747, it is enough to test a = 2, 3, 5, 7, and 11;
+if n < 3,474,749,660,383, it is enough to test a = 2, 3, 5, 7, 11, and 13;
+if n < 341,550,071,728,321, it is enough to test a = 2, 3, 5, 7, 11, 13, and 17.
+*/
+
 bool is_prime_mr(u64 n)
 {
-    if ( (!(n & 1) && n != 2 ) || (n < 2) || (n % 3 == 0 && n != 3))
-        return false;
-    if (n <= 3)
-        return true;
+    if(n==2) return true;
 
+    /* even numbers other than 2 are composite */
+    if(!(n&1)) return false;
+
+    /* factor power's of 2 from n-1 */
     u64 d = (n-1) / 2;
     u64 s = 1;
     while (!(d & 1)) {
@@ -376,20 +439,44 @@ bool is_prime_mr(u64 n)
 
     //printf("d=%lu\n", d);
     //printf("s=%lu\n", s);
- 
-    if (n < 1373653)
-        return witness(n,s,d,2) && witness(n,s,d,3);
-    if (n < 9080191)
-        return witness(n,s,d,31) && witness(n,s,d,73);
-    if (n < 4759123141)
-        return witness(n,s,d,2) && witness(n,s,d,7) && witness(n,s,d,61);
-    if (n < 1122004669633)
-        return witness(n,s,d,2) && witness(n,s,d,13) && witness(n,s,d,23) && witness(n,s,d,1662803);
-    if (n < 2152302898747)
-        return witness(n,s,d,2) && witness(n,s,d,3) && witness(n,s,d,5) && witness(n,s,d,7) && witness(n,s,d,11);
-    if (n < 3474749660383)
-        return witness(n,s,d,2) && witness(n,s,d,3) && witness(n,s,d,5) && witness(n,s,d,7) && witness(n,s,d,11) && witness(n,s,d,13);
-    return witness(n,s,d,2) && witness(n,s,d,3) && witness(n,s,d,5) && witness(n,s,d,7) && witness(n,s,d,11) && witness(n,s,d,13) && witness(n,s,d,17);
+
+    /* two witness case */
+    if(n < 9080191)
+        return !witness(n,s,d,31) && !witness(n,s,d,73);
+    /* three witness case */
+    if(n < 4759123141)
+        return !witness(n,s,d,2) && !witness(n,s,d,7) && !witness(n,s,d,61);
+    /* four witness case */
+    if(n < 1122004669633)
+        return !witness(n,s,d,2) && !witness(n,s,d,13) && !witness(n,s,d,23) && !witness(n,s,d,1662803);
+    /* 5 */
+    if(n < 2152302898747)
+        return !witness(n,s,d,2) && !witness(n,s,d,3) && !witness(n,s,d,5) && !witness(n,s,d,7) && !witness(n,s,d,11);
+    /* 6 */
+    if(n < 3474749660383)
+        return !witness(n,s,d,2) && !witness(n,s,d,3) && !witness(n,s,d,5) && !witness(n,s,d,7) && !witness(n,s,d,11) && !witness(n,s,d,13);
+    /* 7 */
+    return !witness(n,s,d,2) && !witness(n,s,d,3) && !witness(n,s,d,5) && !witness(n,s,d,7) && !witness(n,s,d,11) && !witness(n,s,d,13) && !witness(n,s,d,17);
+}
+
+bool is_prime(u64 n)
+{
+    // 0, 1, negative are not prime 
+    if(n < 2) return false;
+
+    // even numbers other than 2 are not prime
+    if(n == 2) return true;
+    if(!(n&1)) return false;
+
+    // 168 primes below 1000:
+    u64 small_primes[167] = { /*2,*/ 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199, 211, 223, 227, 229, 233, 239, 241, 251, 257, 263, 269, 271, 277, 281, 283, 293, 307, 311, 313, 317, 331, 337, 347, 349, 353, 359, 367, 373, 379, 383, 389, 397, 401, 409, 419, 421, 431, 433, 439, 443, 449, 457, 461, 463, 467, 479, 487, 491, 499, 503, 509, 521, 523, 541, 547, 557, 563, 569, 571, 577, 587, 593, 599, 601, 607, 613, 617, 619, 631, 641, 643, 647, 653, 659, 661, 673, 677, 683, 691, 701, 709, 719, 727, 733, 739, 743, 751, 757, 761, 769, 773, 787, 797, 809, 811, 821, 823, 827, 829, 839, 853, 857, 859, 863, 877, 881, 883, 887, 907, 911, 919, 929, 937, 941, 947, 953, 967, 971, 977, 983, 991, 997};
+
+    // 
+    for(int i=0; i<167; ++i)
+        if(n % small_primes[i] == 0)
+            return false;
+
+    return is_prime_mr(n);
 }
 
 /*****************************************************************************/
@@ -398,7 +485,10 @@ bool is_prime_mr(u64 n)
 
 int main()
 {
-    if(1) {
+    //printf("%d\n", is_prime_mr(9999987899999));
+    //return 0;
+
+    if(0) {
         int num_cases;
         scanf("%d", &num_cases);
         for(int i=0; i<num_cases; ++i) {
@@ -417,13 +507,12 @@ int main()
     }
     else {
         palin_init(9999999999999);
-        //palin_init(1467083807641);
 
         while(1) {
             u64 p = palin_next();
-    
+
             if(p == -1) break;
-    
+   
             if(is_prime_mr(p))
                 printf("%lu\n", p);
         }

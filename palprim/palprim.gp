@@ -108,7 +108,7 @@ gen_tests0() = {
 
         ans = lift(Mod(b,m)^e);
 
-        print("if(expmod(",b,"ull, ",e,"ull, ",m,"ull) == ",ans,") { printf(\"pass\"); } else { printf(\"fail\"); }");
+        print("    if(powmod(",b,"ull, ",e,"ull, ",m,"ull) == ",ans,") { printf(\"pass\\n\"); } else { printf(\"fail\\n\"); }");
     );
 }
 
@@ -119,6 +119,19 @@ gen_tests1() = {
 
         ans = lift(Mod(k,m)^2);
 
-        print("if(sqrmod(",k,"ull, ",m,"ull) == ",ans,") { printf(\"pass\"); } else { printf(\"fail\"); }");
+        print("    if(sqrmod(",k,"ull, ",m,"ull) == ",ans,") { printf(\"pass\\n\"); } else { printf(\"fail\\n\"); }");
     );
 }
+
+gen_tests2() = {
+    for(x=1,64,
+        a = random(2^64);
+        b = random(2^64);
+        m = random(10^13);
+
+        ans = lift((a*b) % m);
+
+        print("    if(mulmod(",a,"ull, ",b,"ull, ",m,"ull) == ",ans,") { printf(\"pass\\n\"); } else { printf(\"fail\\n\"); }");
+    );
+}
+
