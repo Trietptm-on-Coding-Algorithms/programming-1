@@ -100,7 +100,7 @@ search() = {
     print("total P.P. found=", num_pp);
 }
 
-gen_powmod_tests() = {
+gen_tests0() = {
     for(x=1,64,
         b = random(2^64);
         e = random(2^64);
@@ -109,5 +109,16 @@ gen_powmod_tests() = {
         ans = lift(Mod(b,m)^e);
 
         print("if(expmod(",b,"ull, ",e,"ull, ",m,"ull) == ",ans,") { printf(\"pass\"); } else { printf(\"fail\"); }");
+    );
+}
+
+gen_tests1() = {
+    for(x=1,64,
+        k = random(2^64);
+        m = random(10^13);
+
+        ans = lift(Mod(k,m)^2);
+
+        print("if(sqrmod(",k,"ull, ",m,"ull) == ",ans,") { printf(\"pass\"); } else { printf(\"fail\"); }");
     );
 }

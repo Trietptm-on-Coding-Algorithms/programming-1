@@ -280,8 +280,28 @@ u64 palin_next()
 // from https://rosettacode.org/wiki/Miller%E2%80%93Rabin_primality_test#Deterministic_up_to_341.2C550.2C071.2C728.2C321
 // claim: Deterministic up to 341,550,071,728,321[edit]
 
+u64 sqrmod(u64 base, u64 mod)
+{
+    u64 a = base >> 32;
+    u64 b = base & 0xFFFFFFFF;
+
+    // b^2 (mod n)
+    u64 t0 = b*b % mod;
+    // 2*ab*(2^32)
+    u64 t1 = a*b % mod;
+    t1 = (t1 << 32) % mod;
+    t1 = (t1 << 1) % mod;
+    // a^2 * 2^32 * 2^32
+    u64 t2 = a*a % mod;
+    t2 = (t2 << 32) % mod;
+    t2 = (t2 << 32) % mod;
+
+    // the final
+    return (t0+t1+t2) % mod;
+}
+
 // calcul a^n%mod
-u64 expmod(u64 a, u64 n, u64 mod)
+u64 expmod128(u64 a, u64 n, u64 mod)
 {
     //printf("expmod(a=%lu, n=%lu, mod=%lu)\n", a, n, mod);
     u64 runner = a;
@@ -312,7 +332,7 @@ bool witness(u64 n, u64 s, u64 d, u64 a)
     // to witness compositeness, we need to show that a^d and a^(2^r*d) does not
     // equal 1 or -1
 
-    u64 x = expmod(a, d, n); // a^d
+    u64 x = expmod128(a, d, n); // a^d
     u64 y;
  
     for(; s; s--) {
