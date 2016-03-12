@@ -9,14 +9,14 @@ with open('pplist.txt') as f:
     for line in f:
         this_prime = int(line)
 
-        run_len = this_prime - last_prime
+        run_len = last_prime - this_prime
 
         if run_len > 1000:
             info = {
-                'start':last_prime,
+                'start':this_prime,
                 'length':run_len,
             }
-            runs[last_prime] = info
+            runs[this_prime] = info
 
         last_prime = this_prime
 
@@ -31,15 +31,8 @@ for b in best:
     left_prime = runs[b]['start']
     right_prime = left_prime + runs[b]['length']
 
-    # convert the palindrome boundaries to "count" boundaries
-    left_prime_ = str(left_prime)
-    left_prime_ = int(left_prime_[0:len(left_prime_)/2+1])
-
-    right_prime_ = str(right_prime)
-    right_prime_ = int(right_prime_[0:len(right_prime_)/2+1])
-
-    print "    if x>%d and x<%d: return %d # for [%d,%d] len=%d" % \
-        (left_prime_, right_prime_, left_prime_, left_prime, right_prime, right_prime-left_prime)
+    print "    if(x>%dull and x<%dull) return %dull; // interval_len=%d" % \
+        (left_prime, right_prime, left_prime, right_prime-left_prime)
 
 
 

@@ -102,36 +102,52 @@ search() = {
 
 gen_tests0() = {
     for(x=1,64,
-        b = random(2^64);
-        e = random(2^64);
+        b = random(2^63);
+        e = random(2^63);
         m = random(10^13);
 
         ans = lift(Mod(b,m)^e);
 
-        print("    if(powmod(",b,"ull, ",e,"ull, ",m,"ull) == ",ans,") { printf(\"pass\\n\"); } else { printf(\"fail\\n\"); }");
+        print("    if(powmod(",b,"ull, ",e,"ull, ",m,"ull) != ",ans,") return -1;");
     );
 }
 
 gen_tests1() = {
     for(x=1,64,
-        k = random(2^64);
+        k = random(2^63);
         m = random(10^13);
 
         ans = lift(Mod(k,m)^2);
 
-        print("    if(sqrmod(",k,"ull, ",m,"ull) == ",ans,") { printf(\"pass\\n\"); } else { printf(\"fail\\n\"); }");
+        print("    if(sqrmod(",k,"ull, ",m,"ull) != ",ans,") return -1;");
     );
 }
 
 gen_tests2() = {
     for(x=1,64,
-        a = random(2^64);
-        b = random(2^64);
+        a = random(2^63);
+        b = random(2^63);
         m = random(10^13);
 
         ans = lift((a*b) % m);
 
-        print("    if(mulmod(",a,"ull, ",b,"ull, ",m,"ull) == ",ans,") { printf(\"pass\\n\"); } else { printf(\"fail\\n\"); }");
+        print("    if(mulmod(",a,"ull, ",b,"ull, ",m,"ull) != ",ans,") return -1;");
     );
+}
+
+gen_test_full() = {
+    print(100000);
+    for(x=1,100000,
+        print(random(10^13-1-2) + 2);
+    )
+}
+
+gen_tests() = {
+    gen_tests0();
+    print("");
+    gen_tests1();
+    print("");
+    gen_tests2();
+    print("");
 }
 

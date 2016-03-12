@@ -5,3 +5,6 @@ math: math.cpp
 
 palprim: palprim.cpp
 	g++ palprim.cpp -o palprim
+
+clean:
+	rm math palprim
