@@ -375,8 +375,6 @@ bool witness(u64 n, u64 s, u64 d, u64 a)
     }
        
     // try all a^(2*d), a^(2^2*d), a^(2^3*d), ..., a^(2^s*d)
-    u64 y;
- 
     for(int i=1; i<=s; ++i) {
         // compute a^(2^1*d), a^(2^2*d), ...
         x = sqrmod(x, n);
@@ -489,8 +487,10 @@ int main()
 
             //begin = clock();
 
+            printf("attempt lookup on %" PRIu64 "\n", start);
             u64 tmp = palin_skip(start);
             if(tmp != start) {
+                printf("a hit!\n");
                 printf("%" PRIu64 "\n", tmp);
             }
             else {
