@@ -1,0 +1,501 @@
+// inclusion of AAA discludes AAB
+// inclusion of AAA discludes AAC
+// inclusion of AAA discludes AAD
+// inclusion of AAA discludes ABA
+// inclusion of AAA discludes ACA
+// inclusion of AAA discludes ADA
+// inclusion of AAA discludes BAA
+// inclusion of AAA discludes CAA
+// inclusion of AAA discludes DAA
+// inclusion of ABB discludes AAB
+// inclusion of ABB discludes ABA
+// inclusion of ABB discludes ABC
+// inclusion of ABB discludes ABD
+// inclusion of ABB discludes ACB
+// inclusion of ABB discludes ADB
+// inclusion of ABB discludes BBB
+// inclusion of ABB discludes CBB
+// inclusion of ABB discludes DBB
+// inclusion of ACC discludes AAC
+// inclusion of ACC discludes ABC
+// inclusion of ACC discludes ACA
+// inclusion of ACC discludes ACB
+// inclusion of ACC discludes ACD
+// inclusion of ACC discludes ADC
+// inclusion of ACC discludes BCC
+// inclusion of ACC discludes CCC
+// inclusion of ACC discludes DCC
+// inclusion of ADD discludes AAD
+// inclusion of ADD discludes ABD
+// inclusion of ADD discludes ACD
+// inclusion of ADD discludes ADA
+// inclusion of ADD discludes ADB
+// inclusion of ADD discludes ADC
+// inclusion of ADD discludes BDD
+// inclusion of ADD discludes CDD
+// inclusion of ADD discludes DDD
+// inclusion of BAB discludes AAB
+// inclusion of BAB discludes BAA
+// inclusion of BAB discludes BAC
+// inclusion of BAB discludes BAD
+// inclusion of BAB discludes BBB
+// inclusion of BAB discludes BCB
+// inclusion of BAB discludes BDB
+// inclusion of BAB discludes CAB
+// inclusion of BAB discludes DAB
+// inclusion of BBA discludes ABA
+// inclusion of BBA discludes BAA
+// inclusion of BBA discludes BBB
+// inclusion of BBA discludes BBC
+// inclusion of BBA discludes BBD
+// inclusion of BBA discludes BCA
+// inclusion of BBA discludes BDA
+// inclusion of BBA discludes CBA
+// inclusion of BBA discludes DBA
+// inclusion of BCD discludes ACD
+// inclusion of BCD discludes BAD
+// inclusion of BCD discludes BBD
+// inclusion of BCD discludes BCA
+// inclusion of BCD discludes BCB
+// inclusion of BCD discludes BCC
+// inclusion of BCD discludes BDD
+// inclusion of BCD discludes CCD
+// inclusion of BCD discludes DCD
+// inclusion of BDC discludes ADC
+// inclusion of BDC discludes BAC
+// inclusion of BDC discludes BBC
+// inclusion of BDC discludes BCC
+// inclusion of BDC discludes BDA
+// inclusion of BDC discludes BDB
+// inclusion of BDC discludes BDD
+// inclusion of BDC discludes CDC
+// inclusion of BDC discludes DDC
+// inclusion of CAC discludes AAC
+// inclusion of CAC discludes BAC
+// inclusion of CAC discludes CAA
+// inclusion of CAC discludes CAB
+// inclusion of CAC discludes CAD
+// inclusion of CAC discludes CBC
+// inclusion of CAC discludes CCC
+// inclusion of CAC discludes CDC
+// inclusion of CAC discludes DAC
+// inclusion of CBD discludes ABD
+// inclusion of CBD discludes BBD
+// inclusion of CBD discludes CAD
+// inclusion of CBD discludes CBA
+// inclusion of CBD discludes CBB
+// inclusion of CBD discludes CBC
+// inclusion of CBD discludes CCD
+// inclusion of CBD discludes CDD
+// inclusion of CBD discludes DBD
+// inclusion of CCA discludes ACA
+// inclusion of CCA discludes BCA
+// inclusion of CCA discludes CAA
+// inclusion of CCA discludes CBA
+// inclusion of CCA discludes CCB
+// inclusion of CCA discludes CCC
+// inclusion of CCA discludes CCD
+// inclusion of CCA discludes CDA
+// inclusion of CCA discludes DCA
+// inclusion of CDB discludes ADB
+// inclusion of CDB discludes BDB
+// inclusion of CDB discludes CAB
+// inclusion of CDB discludes CBB
+// inclusion of CDB discludes CCB
+// inclusion of CDB discludes CDA
+// inclusion of CDB discludes CDC
+// inclusion of CDB discludes CDD
+// inclusion of CDB discludes DDB
+// inclusion of DAD discludes AAD
+// inclusion of DAD discludes BAD
+// inclusion of DAD discludes CAD
+// inclusion of DAD discludes DAA
+// inclusion of DAD discludes DAB
+// inclusion of DAD discludes DAC
+// inclusion of DAD discludes DBD
+// inclusion of DAD discludes DCD
+// inclusion of DAD discludes DDD
+// inclusion of DBC discludes ABC
+// inclusion of DBC discludes BBC
+// inclusion of DBC discludes CBC
+// inclusion of DBC discludes DAC
+// inclusion of DBC discludes DBA
+// inclusion of DBC discludes DBB
+// inclusion of DBC discludes DBD
+// inclusion of DBC discludes DCC
+// inclusion of DBC discludes DDC
+// inclusion of DCB discludes ACB
+// inclusion of DCB discludes BCB
+// inclusion of DCB discludes CCB
+// inclusion of DCB discludes DAB
+// inclusion of DCB discludes DBB
+// inclusion of DCB discludes DCA
+// inclusion of DCB discludes DCC
+// inclusion of DCB discludes DCD
+// inclusion of DCB discludes DDB
+// inclusion of DDA discludes ADA
+// inclusion of DDA discludes BDA
+// inclusion of DDA discludes CDA
+// inclusion of DDA discludes DAA
+// inclusion of DDA discludes DBA
+// inclusion of DDA discludes DCA
+// inclusion of DDA discludes DDB
+// inclusion of DDA discludes DDC
+// inclusion of DDA discludes DDD
+// total nodes: 64
+// total allowed: 16
+// total deleted: 48
+graph stuff {
+     "BDA" -- "CDA"
+     "ABC" -- "CBC"
+     "AAB" -- "DAB"
+     "BAC" -- "CAC"
+     "BAA" -- "BAB"
+     "BAD" -- "DAD"
+     "CAA" -- "CDA"
+     "AAA" -- "BAA"
+     "BBA" -- "BBD"
+     "BBB" -- "DBB"
+     "BDB" -- "CDB"
+     "DBA" -- "DDA"
+     "BAC" -- "BCC"
+     "BAB" -- "BCB"
+     "BBA" -- "CBA"
+     "CBC" -- "CBD"
+     "ABC" -- "BBC"
+     "BBD" -- "BDD"
+     "ACD" -- "DCD"
+     "AAA" -- "ABA"
+     "ABA" -- "ADA"
+     "BAA" -- "CAA"
+     "ABB" -- "CBB"
+     "ACA" -- "DCA"
+     "DBC" -- "DBD"
+     "BCA" -- "BDA"
+     "ADB" -- "ADD"
+     "DCC" -- "DDC"
+     "BBB" -- "CBB"
+     "AAA" -- "DAA"
+     "BDA" -- "BDB"
+     "DCA" -- "DCD"
+     "CAB" -- "CAD"
+     "DDB" -- "DDC"
+     "AAA" -- "AAC"
+     "BCD" -- "DCD"
+     "ADB" -- "BDB"
+     "DDC" -- "DDD"
+     "ADB" -- "DDB"
+     "BAA" -- "DAA"
+     "BBC" -- "CBC"
+     "BCB" -- "BCD"
+     "ABB" -- "DBB"
+     "DAC" -- "DDC"
+     "ABA" -- "ABD"
+     "ABD" -- "DBD"
+     "CAB" -- "CCB"
+     "DAB" -- "DAC"
+     "BBA" -- "BBC"
+     "BBA" -- "BCA"
+     "CAA" -- "CAD"
+     "CAB" -- "DAB"
+     "CDB" -- "DDB"
+     "DBC" -- "DDC"
+     "BAD" -- "CAD"
+     "BDB" -- "DDB"
+     "DAD" -- "DBD"
+     "BAB" -- "BAC"
+     "CDA" -- "CDC"
+     "CAC" -- "CDC"
+     "DCB" -- "DCC"
+     "BBC" -- "BBD"
+     "BCB" -- "DCB"
+     "BCD" -- "CCD"
+     "AAD" -- "ABD"
+     "ADC" -- "CDC"
+     "BDD" -- "CDD"
+     "DCC" -- "DCD"
+     "ACB" -- "ADB"
+     "CCA" -- "CCD"
+     "DBD" -- "DDD"
+     "AAA" -- "AAB"
+     "AAC" -- "CAC"
+     "CAD" -- "DAD"
+     "DCB" -- "DDB"
+     "BBC" -- "DBC"
+     "CBB" -- "CDB"
+     "CBA" -- "CBD"
+     "DDA" -- "DDC"
+     "BBD" -- "BCD"
+     "DAC" -- "DBC"
+     "BAC" -- "BBC"
+     "CDA" -- "CDD"
+     "BCA" -- "CCA"
+     "CBD" -- "CDD"
+     "ABB" -- "ACB"
+     "BAB" -- "BAD"
+     "BDB" -- "BDD"
+     "ADA" -- "DDA"
+     "CDA" -- "CDB"
+     "BCC" -- "DCC"
+     "CCA" -- "DCA"
+     "ABB" -- "BBB"
+     "BAD" -- "BCD"
+     "AAD" -- "BAD"
+     "CAB" -- "CAC"
+     "ABB" -- "ADB"
+     "ADA" -- "ADD"
+     "CCA" -- "CCC"
+     "DBD" -- "DCD"
+     "DCA" -- "DCB"
+     "CBA" -- "CCA"
+     "AAB" -- "AAD"
+     "DBA" -- "DBC"
+     "ABC" -- "DBC"
+     "CBB" -- "DBB"
+     "ABA" -- "ACA"
+     "DBB" -- "DBD"
+     "CBB" -- "CBD"
+     "ABA" -- "BBA"
+     "ACB" -- "DCB"
+     "ADA" -- "BDA"
+     "AAD" -- "CAD"
+     "DDA" -- "DDB"
+     "ABB" -- "ABC"
+     "ABD" -- "BBD"
+     "CBC" -- "CCC"
+     "BAB" -- "CAB"
+     "BAA" -- "BAC"
+     "CCC" -- "CDC"
+     "CDA" -- "DDA"
+     "CBC" -- "CDC"
+     "ADD" -- "BDD"
+     "AAC" -- "ACC"
+     "DAD" -- "DDD"
+     "AAD" -- "DAD"
+     "DAB" -- "DDB"
+     "CCD" -- "DCD"
+     "BBA" -- "DBA"
+     "BAC" -- "BDC"
+     "BAC" -- "DAC"
+     "BAA" -- "BBA"
+     "CBD" -- "CCD"
+     "DBC" -- "DCC"
+     "ADC" -- "ADD"
+     "BCC" -- "CCC"
+     "CBB" -- "CBC"
+     "DBB" -- "DDB"
+     "AAA" -- "CAA"
+     "ABD" -- "ADD"
+     "BAA" -- "BCA"
+     "DCA" -- "DDA"
+     "CBA" -- "CBB"
+     "ACA" -- "ACD"
+     "ABC" -- "ACC"
+     "AAD" -- "ADD"
+     "ADC" -- "DDC"
+     "ACD" -- "BCD"
+     "DAB" -- "DBB"
+     "AAC" -- "BAC"
+     "DAA" -- "DAC"
+     "BDC" -- "BDD"
+     "BAA" -- "BDA"
+     "CAA" -- "CCA"
+     "BBC" -- "BCC"
+     "ACA" -- "ADA"
+     "BBD" -- "DBD"
+     "BAC" -- "BAD"
+     "DAC" -- "DAD"
+     "CAA" -- "DAA"
+     "CCB" -- "CCC"
+     "BDD" -- "DDD"
+     "CDB" -- "CDD"
+     "BAB" -- "BDB"
+     "BAB" -- "DAB"
+     "BBB" -- "BCB"
+     "AAB" -- "ACB"
+     "ACA" -- "ACC"
+     "ACB" -- "ACD"
+     "AAB" -- "ABB"
+     "ABC" -- "ABD"
+     "ADA" -- "CDA"
+     "CAD" -- "CBD"
+     "ABB" -- "ABD"
+     "CBC" -- "DBC"
+     "CCC" -- "CCD"
+     "BCA" -- "BCC"
+     "DAB" -- "DCB"
+     "DBA" -- "DBD"
+     "CAD" -- "CDD"
+     "ACC" -- "ADC"
+     "ADA" -- "ADC"
+     "BBA" -- "BBB"
+     "CBA" -- "CDA"
+     "BCB" -- "BDB"
+     "ACC" -- "CCC"
+     "AAC" -- "ADC"
+     "CAA" -- "CAB"
+     "CAB" -- "CDB"
+     "ACB" -- "BCB"
+     "BCA" -- "DCA"
+     "CBD" -- "DBD"
+     "DAB" -- "DAD"
+     "CAA" -- "CBA"
+     "CAC" -- "CBC"
+     "BAB" -- "BBB"
+     "AAB" -- "AAC"
+     "BCA" -- "BCB"
+     "DBB" -- "DBC"
+     "AAB" -- "ADB"
+     "ABA" -- "CBA"
+     "CCA" -- "CCB"
+     "DCD" -- "DDD"
+     "ACA" -- "ACB"
+     "CDC" -- "CDD"
+     "DAD" -- "DCD"
+     "BAD" -- "BDD"
+     "ABD" -- "CBD"
+     "DBB" -- "DCB"
+     "AAD" -- "ACD"
+     "CAC" -- "CAD"
+     "CAC" -- "DAC"
+     "ACC" -- "BCC"
+     "DAA" -- "DAD"
+     "AAA" -- "ADA"
+     "BDB" -- "BDC"
+     "CBB" -- "CCB"
+     "ADD" -- "DDD"
+     "ABA" -- "ABC"
+     "ACC" -- "ACD"
+     "ACB" -- "CCB"
+     "DAA" -- "DAB"
+     "BDA" -- "DDA"
+     "BAD" -- "BBD"
+     "AAA" -- "ACA"
+     "DBA" -- "DBB"
+     "ADA" -- "ADB"
+     "ACB" -- "ACC"
+     "DCB" -- "DCD"
+     "CBA" -- "CBC"
+     "ADD" -- "CDD"
+     "ABC" -- "ADC"
+     "AAB" -- "BAB"
+     "CDD" -- "DDD"
+     "BDA" -- "BDD"
+     "BBB" -- "BBD"
+     "DBA" -- "DCA"
+     "CAA" -- "CAC"
+     "BCB" -- "CCB"
+     "ACA" -- "BCA"
+     "DAA" -- "DDA"
+     "BAA" -- "BAD"
+     "BBB" -- "BBC"
+     "ACD" -- "CCD"
+     "CCB" -- "CDB"
+     "BCC" -- "BCD"
+     "ABA" -- "DBA"
+     "CAC" -- "CCC"
+     "CAB" -- "CBB"
+     "ABA" -- "ABB"
+     "DDA" -- "DDD"
+     "CDC" -- "DDC"
+     "DAA" -- "DCA"
+     "ABD" -- "ACD"
+     "CDB" -- "CDC"
+     "DAC" -- "DCC"
+     "CCC" -- "DCC"
+     "ADB" -- "CDB"
+     "BDC" -- "DDC"
+     "CAD" -- "CCD"
+     "DCA" -- "DCC"
+     "ACD" -- "ADD"
+     "ACA" -- "CCA"
+     "ACC" -- "DCC"
+     "CCB" -- "CCD"
+     "DAA" -- "DBA"
+     "ADC" -- "BDC"
+     "AAB" -- "CAB"
+     "BCA" -- "BCD"
+     "CBA" -- "DBA"
+     "DDB" -- "DDD"
+     "AAC" -- "AAD"
+     "BDA" -- "BDC"
+     "BCC" -- "BDC"
+     "BBB" -- "BDB"
+     "CCA" -- "CDA"
+     "BCD" -- "BDD"
+     "ADB" -- "ADC"
+     "CCB" -- "DCB"
+     "BBD" -- "CBD"
+     "BBA" -- "BDA"
+     "AAA" -- "AAD"
+     "AAC" -- "ABC"
+     "BBC" -- "BDC"
+     "AAC" -- "DAC"
+     "CCD" -- "CDD"
+     "BCB" -- "BCC"
+     "BDC" -- "CDC"
+    "AAA" [style=filled, fillcolor=green]
+    "AAB" [style=filled, fillcolor=red]
+    "AAC" [style=filled, fillcolor=red]
+    "AAD" [style=filled, fillcolor=red]
+    "ABA" [style=filled, fillcolor=red]
+    "ABB" [style=filled, fillcolor=green]
+    "ABC" [style=filled, fillcolor=red]
+    "ABD" [style=filled, fillcolor=red]
+    "ACA" [style=filled, fillcolor=red]
+    "ACB" [style=filled, fillcolor=red]
+    "ACC" [style=filled, fillcolor=green]
+    "ACD" [style=filled, fillcolor=red]
+    "ADA" [style=filled, fillcolor=red]
+    "ADB" [style=filled, fillcolor=red]
+    "ADC" [style=filled, fillcolor=red]
+    "ADD" [style=filled, fillcolor=green]
+    "BAA" [style=filled, fillcolor=red]
+    "BAB" [style=filled, fillcolor=green]
+    "BAC" [style=filled, fillcolor=red]
+    "BAD" [style=filled, fillcolor=red]
+    "BBA" [style=filled, fillcolor=green]
+    "BBB" [style=filled, fillcolor=red]
+    "BBC" [style=filled, fillcolor=red]
+    "BBD" [style=filled, fillcolor=red]
+    "BCA" [style=filled, fillcolor=red]
+    "BCB" [style=filled, fillcolor=red]
+    "BCC" [style=filled, fillcolor=red]
+    "BCD" [style=filled, fillcolor=green]
+    "BDA" [style=filled, fillcolor=red]
+    "BDB" [style=filled, fillcolor=red]
+    "BDC" [style=filled, fillcolor=green]
+    "BDD" [style=filled, fillcolor=red]
+    "CAA" [style=filled, fillcolor=red]
+    "CAB" [style=filled, fillcolor=red]
+    "CAC" [style=filled, fillcolor=green]
+    "CAD" [style=filled, fillcolor=red]
+    "CBA" [style=filled, fillcolor=red]
+    "CBB" [style=filled, fillcolor=red]
+    "CBC" [style=filled, fillcolor=red]
+    "CBD" [style=filled, fillcolor=green]
+    "CCA" [style=filled, fillcolor=green]
+    "CCB" [style=filled, fillcolor=red]
+    "CCC" [style=filled, fillcolor=red]
+    "CCD" [style=filled, fillcolor=red]
+    "CDA" [style=filled, fillcolor=red]
+    "CDB" [style=filled, fillcolor=green]
+    "CDC" [style=filled, fillcolor=red]
+    "CDD" [style=filled, fillcolor=red]
+    "DAA" [style=filled, fillcolor=red]
+    "DAB" [style=filled, fillcolor=red]
+    "DAC" [style=filled, fillcolor=red]
+    "DAD" [style=filled, fillcolor=green]
+    "DBA" [style=filled, fillcolor=red]
+    "DBB" [style=filled, fillcolor=red]
+    "DBC" [style=filled, fillcolor=green]
+    "DBD" [style=filled, fillcolor=red]
+    "DCA" [style=filled, fillcolor=red]
+    "DCB" [style=filled, fillcolor=green]
+    "DCC" [style=filled, fillcolor=red]
+    "DCD" [style=filled, fillcolor=red]
+    "DDA" [style=filled, fillcolor=green]
+    "DDB" [style=filled, fillcolor=red]
+    "DDC" [style=filled, fillcolor=red]
+    "DDD" [style=filled, fillcolor=red]
+}
